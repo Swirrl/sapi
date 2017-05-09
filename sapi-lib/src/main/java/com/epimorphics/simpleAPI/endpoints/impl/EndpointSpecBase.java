@@ -51,7 +51,8 @@ public abstract class EndpointSpecBase extends ConfigItem implements EndpointSpe
     protected String flattenPath;
     protected boolean suppressID;
     protected Engine engine;
-
+    protected Map<String, String> bindings = new HashMap<>();
+    
     public EndpointSpecBase(API api) {
         super();
         this.api = api;
@@ -100,10 +101,15 @@ public abstract class EndpointSpecBase extends ConfigItem implements EndpointSpe
         return getQueryBuilder(DEFAULT_VIEWNAME);
     }
     
+
+    @Override public QueryBuilder getQueryBuilder(String view) {
+        return getQueryBuilder(view, null);
+    }
+    
     @Override
     public QueryBuilder getQueryBuilder(Request request) {   
         
-        QueryBuilder builder = getQueryBuilder( request.getViewName() );
+        QueryBuilder builder = getQueryBuilder( request.getViewName(), request );
         if (builder instanceof ListQueryBuilder) {
             return builder;
         } else {
@@ -111,7 +117,7 @@ public abstract class EndpointSpecBase extends ConfigItem implements EndpointSpe
         }
     }
     
-    abstract public QueryBuilder getQueryBuilder(String name);
+    abstract public QueryBuilder getQueryBuilder(String name, Request request);
     
     /**
      * Finalize a query builder by running the query processors
@@ -245,4 +251,12 @@ public abstract class EndpointSpecBase extends ConfigItem implements EndpointSpe
         this.engine = engine;
     }
     
+    @Override
+    public Map<String, String> getBindings() {
+        return bindings;
+    }
+    
+    public void addBinding(String key, String value) {
+        bindings.put(key, value);
+    }
 }

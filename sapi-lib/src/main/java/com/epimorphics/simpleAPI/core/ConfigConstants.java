@@ -47,6 +47,8 @@ public class ConfigConstants {
     public static final String NESTED_SELECT_VARS = "nestedSelectVars";
     public static final String DISTINCT    = "distinct"; 
     public static final String ALIAS       = "alias"; 
+    public static final String PROCESSORS  = "processors"; 
+    public static final String BINDINGS    = "bindings"; 
     
     public static final String PROPERTY    = "prop";
     public static final String OPTIONAL    = "optional";
@@ -59,6 +61,7 @@ public class ConfigConstants {
     public static final String VALUE_BASE  = "valueBase";
     public static final String SUPPRESSID  = "suppressID";
     public static final String HIDE        = "hide";
+    public static final String EXCLUDE     = "excludeValue";
     
     public static final String CLASS       = "class";
     public static final String CLASSES     = "classes";

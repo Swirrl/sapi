@@ -11,6 +11,8 @@ package com.epimorphics.simpleAPI.views;
 
 import static com.epimorphics.simpleAPI.core.ConfigConstants.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.jena.atlas.json.JsonObject;
@@ -41,6 +43,7 @@ public class PropertySpec {
     protected ClassSpec nested = null;
     protected String valueBase = null;
     protected boolean hide = false;
+    protected List<String> excludedValues = new ArrayList<String>();
     
     public PropertySpec(String jsonname, URI property) {
         this.jsonname = jsonname == null ? makeJsonName(property) : jsonname;
@@ -80,6 +83,7 @@ public class PropertySpec {
         ps.valueBase = valueBase;
         ps.hide = hide;
         ps.nested = nested;
+        ps.excludedValues = new ArrayList<>( excludedValues );
         return ps;
     }
     
@@ -151,6 +155,14 @@ public class PropertySpec {
         this.range = typeURI;
     }
 
+    public void addExcludedValue(String value) {
+        excludedValues.add(value);
+    }
+    
+    public List<String> getExcludedValues() {
+        return excludedValues;
+    }
+    
     public String getComment() {
         return comment;
     }
@@ -238,6 +250,14 @@ public class PropertySpec {
         if (multivalued) buf.append(" multi");
         if (valueBase != null) buf.append(" base(" + valueBase + ")");
         if (comment != null) buf.append(" '" + comment + "'");
+        if ( ! excludedValues.isEmpty() ) {
+            buf.append(" excludeValues(");
+            for( String ex : excludedValues ) {
+                buf.append(ex);
+                buf.append(" ");
+            }
+            buf.append(")");
+        }
         if (isNested()) {
             buf.append("\n");
             nested.print(buf, indent + "  ");
@@ -298,6 +318,18 @@ public class PropertySpec {
             if (propO.hasKey(HIDE)) {
                 boolean sid = JsonUtil.getBooleanValue(propO, HIDE, false);
                 ps.setHide(sid);
+            }
+            if (propO.hasKey(EXCLUDE)) {
+                JsonValue jv = propO.get(EXCLUDE);
+                if (jv.isString()) {
+                    String ex = jv.getAsString().value();
+                    ps.addExcludedValue( model.getPrefixes().expandPrefix(ex) );
+                } else if (jv.isArray()) {
+                    for (JsonValue v : jv.getAsArray()) {
+                        String ex = v.getAsString().value();
+                        ps.addExcludedValue( model.getPrefixes().expandPrefix(ex) );
+                    }
+                }
             }
             return ps;
         } else {
