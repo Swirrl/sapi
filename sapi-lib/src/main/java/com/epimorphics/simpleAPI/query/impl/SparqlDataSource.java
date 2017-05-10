@@ -72,8 +72,8 @@ public class SparqlDataSource implements DataSource {
     	if (query instanceof EldaQuery) {
     		EldaQuery eq = (EldaQuery) query;
             log.debug( "EldaQuery: " + eq.display());
-            ResultSet rs = eq.resultSet();
-    		return new ResultStreamSparqlSelect(rs, call);
+            
+            return new ResultStreamSparqlSelect(eq.resultSet(source), call);
     		
     	} else if (query instanceof SparqlQuery) {
             log.debug( "Query: " + ((SparqlQuery) query).getQuery() );
