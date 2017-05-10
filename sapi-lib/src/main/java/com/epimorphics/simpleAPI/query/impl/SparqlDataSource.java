@@ -12,6 +12,7 @@ package com.epimorphics.simpleAPI.query.impl;
 import javax.ws.rs.NotFoundException;
 
 import org.apache.jena.graph.Graph;
+import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
@@ -19,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.epimorphics.appbase.data.SparqlSource;
+import com.epimorphics.simpleAPI.eldalike.EldaQueryBuilder.EldaQuery;
 import com.epimorphics.simpleAPI.query.DataSource;
 import com.epimorphics.simpleAPI.query.ItemQuery;
 import com.epimorphics.simpleAPI.query.ListQuery;
@@ -47,7 +49,7 @@ public class SparqlDataSource implements DataSource {
 
     @Override
     public Result query(ItemQuery query, Call call) {
-        if (query instanceof SparqlQuery) {
+    	if (query instanceof SparqlQuery) {
             SparqlQuery sq = (SparqlQuery) query;
             String queryString = sq.getQuery();
             log.debug( "Query: " + queryString );
@@ -67,10 +69,17 @@ public class SparqlDataSource implements DataSource {
 
     @Override
     public ResultStream query(ListQuery query, Call call) {
-        if (query instanceof SparqlQuery) {
+    	if (query instanceof EldaQuery) {
+    		EldaQuery eq = (EldaQuery) query;
+            log.debug( "EldaQuery: " + eq.display());
+            ResultSet rs = eq.resultSet();
+    		return new ResultStreamSparqlSelect(rs, call);
+    		
+    	} else if (query instanceof SparqlQuery) {
             log.debug( "Query: " + ((SparqlQuery) query).getQuery() );
             SparqlQuery sq = (SparqlQuery) query;
             return new ResultStreamSparqlSelect( source.streamableSelect( sq.getQuery() ), call );
+            
         } else {
             throw new EpiException("SPARQL source given non-SPARQL query");
         }

@@ -3,6 +3,7 @@ package com.epimorphics.simpleAPI.eldalike;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.RDFNode;
 
 import com.epimorphics.simpleAPI.query.Query;
@@ -35,6 +36,14 @@ public class EldaQueryBuilder implements QueryBuilder {
 		
 		public EldaQuery(EldaQueryBuilder origin) {
 			this.origin = origin;
+		}
+
+		public ResultSet resultSet() {
+			return null;
+		}
+
+		public String display() {
+			return "EldaQuery ";
 		}
 	}
 
