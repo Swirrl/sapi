@@ -77,6 +77,7 @@ public class EldaQueryBuilder implements QueryBuilder {
 			
 			Graph constructed = source.construct(queryString);
 			
+			// placeholder for exploration.
 			ModelFactory
 				.createModelForGraph(constructed)
 				.write(System.err, "TTL");
