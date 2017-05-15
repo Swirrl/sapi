@@ -23,6 +23,9 @@ import com.epimorphics.sparql.terms.Var;
 
 public class EldaQueryBuilder implements QueryBuilder {
 
+	static int counter = 0;
+	int index = ++counter;
+	
 	protected Map<String, RDFNode> bindings = new HashMap<String, RDFNode>();
 	
 	protected EldaQueryBuilder copy() {
@@ -41,8 +44,15 @@ public class EldaQueryBuilder implements QueryBuilder {
 	public Query build() {
 		return new EldaQuery(this);
 	}
+
+	public String display() {
+		return "EldaQueryBuilder: [" + index + "]";
+	}
 	
 	public static class EldaQuery implements Query {
+
+		static int counter = 0;
+		int index = ++counter;
 		
 		protected final EldaQueryBuilder origin;
 		
@@ -95,13 +105,13 @@ public class EldaQueryBuilder implements QueryBuilder {
 		}
 
 		protected String composeQuery() {
+			QueryShape s = new QueryShape();
 			// TODO define and create query here
-			return "SELECT ?item WHERE {}";
+			return s.toSparqlSelect(new Settings());
 		}
 
 		public String display() {
-			// TODO sore information here
-			return "EldaQuery ";
+			return "EldaQuery: [" + origin.index + "." + index + "]";
 		}
 	}
 
